@@ -94,6 +94,7 @@ int main()
     catch (const char* error_input)
     {
         cout << error_input << endl;
+        return -1;
     }
 
     
