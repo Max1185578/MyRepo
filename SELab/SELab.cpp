@@ -100,5 +100,5 @@ int main()
         }
         cout << "Argument (x)=" << x << "; Function value y(x)=" << y << endl;
     }
-    //!!!!!
+    //!!!!! проверка
 }
