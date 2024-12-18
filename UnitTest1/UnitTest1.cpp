@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CppUnitTest.h"
-#include "C:\Users\Юрий\source\repos\MyRepo\SELab\SELab.cpp"
+#include "..\SELab\SELab.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
