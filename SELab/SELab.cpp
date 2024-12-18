@@ -21,6 +21,29 @@ double getValue()
     }
 }
 
+int CheckValidParams(double a, double b, double nx, int n)
+{
+    int err{};
+
+    if (b <= a) 
+    {
+        err = 1;
+    }
+    if (nx <= 0 || nx > (b - a))
+    {
+        err = err + 2;
+    }
+    if (n <= 2)
+    {
+        err = err + 4;
+    }
+    if (err)
+    {
+        throw err;
+    }
+    return 1;
+}
+
 double CalculateIteration(double x, double n)
 {
     double sum{}, mlt{ 1 };
@@ -51,7 +74,7 @@ double CalculateIteration(double x, double n)
 
 int main()
 {
-    double a, b, nx = 0, y;
+    double a, b, nx = 0;
     int n = 0;
 
     try
@@ -61,41 +84,43 @@ int main()
 
         a = getValue();
 
-        b = a;
+       // b = a;
         cout << "b (>a) = ";
         b = getValue();
 
-        if (b <= a)
-        {
-            throw "Incorrect interval specified (b>a).";
-        }
         cout << "Enter step\n";
-
         nx = getValue();
-
-        if (nx <= 0 || nx > (b - a))
-        {
-            throw "Incorrect step specified.";
-        }
 
         cout << "Enter n>2(The fractional part will be discarded): ";
         n = getValue();
 
-        if (n <= 2)
-        {
-            throw "incorrect value n. The value must be greater than 2";
-        }
+        CheckValidParams(a, b, nx, n);
+
         for (double x = a; x <= b; x = x + nx)
         {
 
             cout << "Argument (x)=" << x << "; Function value y(x)=" << CalculateIteration(x, n) << endl;
         }
     }
-    catch (const char* error_input)
+    catch (const int error_input)
     {
-        cout << error_input << endl;
+        if (error_input & 1)
+        {
+            cout << "Incorrect interval specified (b>a).\n";
+        }
+        if (error_input & 2)
+        {
+            cout << "Incorrect step specified.\n";
+        }
+        if (error_input & 4)
+        {
+            cout << "incorrect value n. The value must be greater than 2.\n";
+        }
+
         return -1;
     }
-
-    
+    catch (const char* error)
+    {
+        cout << error<< "\n";
+    }
 }
