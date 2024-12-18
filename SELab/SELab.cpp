@@ -8,97 +8,119 @@ double getValue()
         double a;
         cin >> a;
 
-
         if (cin.fail())
         {
             cin.clear();
-            cin.ignore(32767, '\n');
-            cout << "Oops, that input is invalid.  Please try again.\n";
+            throw "Incorrect number entered.";
         }
         else
         {
             cin.ignore(32767, '\n');
-
             return a;
         }
+    }
+}
+
+int CheckValidParams(double a, double b, double nx, int n)
+{
+    int err{};
+
+    if (b <= a) 
+    {
+        err = 1;
+    }
+    if (nx <= 0 || nx > (b - a))
+    {
+        err = err + 2;
+    }
+    if (n <= 2)
+    {
+        err = err + 4;
+    }
+    if (err)
+    {
+        throw err;
+    }
+    return 1;
+}
+
+double CalculateIteration(double x, double n)
+{
+    double sum{}, mlt{ 1 };
+
+    if (x < 0)
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            mlt = mlt * (1 / (1 - x));
+        }
+        return mlt;
+    }
+    else
+    {
+        for (int j = 0; j <= (n - 2); j++)
+        {
+            mlt = 1;
+            for (int i = 0; i <= n + 1; i++)
+            {
+                mlt = mlt * (x + i + j * j / (i + 1));
+            }
+            sum = sum + mlt;
+        }
+        return (sum + 4 * x);
     }
 }
 
 
 int main()
 {
-    double a, b, nx = 0, mlt, sum, y;
+    double a, b, nx = 0;
     int n = 0;
 
-    cout << "Enter interval\n";
-    cout << "a= ";
-    a = getValue();
-    b = a;
-
-    cout << "b (>a) = ";
-
-    while (b <= a)
+    try
     {
+        cout << "Enter interval\n";
+        cout << "a= ";
+
+        a = getValue();
+
+       // b = a;
+        cout << "b (>a) = ";
         b = getValue();
-        if (b <= a)
-        {
-            cout << "Oops, that input is invalid.  Please try again.\n";
-        }
-    }
 
-
-    cout << "Enter step\n";
-
-    while (nx <= 0 || nx > (b - a))
-    {
+        cout << "Enter step\n";
         nx = getValue();
 
-        if (nx <= 0 || nx > (b - a))
-        {
-            cout << "Oops, that input is invalid.  Please try again.\n";
-        }
-    }
-
-
-    cout << "Enter n>2(The fractional part will be discarded): ";
-
-    while (n <= 2)
-    {
+        cout << "Enter n>2(The fractional part will be discarded): ";
         n = getValue();
 
-        if (n <= 2)
+        CheckValidParams(a, b, nx, n);
+
+        for (double x = a; x <= b; x = x + nx)
         {
-            cout << "Oops, that input is invalid.  Please try again.\n";
+
+            cout << "Argument (x)=" << x << "; Function value y(x)=" << CalculateIteration(x, n) << endl;
         }
     }
-
-    for (double x = a; x <= b; x = x + nx)
+    catch (const int error_input)
     {
-        sum = 0;
-        mlt = 1;
+        if (error_input & 1)
+        {
+            cout << "Incorrect interval specified (b>a).\n";
+        }
+        if (error_input & 2)
+        {
+            cout << "Incorrect step specified.\n";
+        }
+        if (error_input & 4)
+        {
+            cout << "incorrect value n. The value must be greater than 2.\n";
+        }
 
-        if (x < 0)
-        {
-            for (int i = 1; i <= n; i++)
-            {
-                mlt = mlt * (1 / (1 - x));
-            }
-            y = mlt;
-        }
-        else
-        {
-            for (int j = 0; j <= (n - 2); j++)
-            {
-                mlt = 1;
-                for (int i = 0; i <= n + 1; i++)
-                {
-                    mlt = mlt * (x + i + j * j / (i + 1));
-                }
-                sum = sum + mlt;
-            }
-            y = sum + 4 * x;
-        }
-        cout << "Argument (x)=" << x << "; Function value y(x)=" << y << endl;
+        return -1;
     }
-
+    catch (const char* error)
+    {
+        cout << error<< "\n";
+    }
 }
